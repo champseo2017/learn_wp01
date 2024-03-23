@@ -1,20 +1,27 @@
 <?php
 /* 
-// กำหนดค่าคงที่ PLUGIN_DIR ให้เป็นเส้นทางไดเรกทอรีของไฟล์ปลั๊กอินนี้
-define('PLUGIN_DIR', plugin_dir_path(__FILE__));
+ถ้าชื่อปลั๊กอินของคุณคือ "Super Duper Forums" และคุณต้องการสร้างปลั๊กอินนี้:
 
-// กำหนดค่าคงที่ PLUGIN_URL ให้เป็น URL ของไดเรกทอรีที่มีไฟล์ปลั๊กอินนี้
-define('PLUGIN_URL', plugin_dir_url(__FILE__));
+1. ชื่อโฟลเดอร์ปลั๊กอิน: ควรเป็น super-duper-forums ซึ่งเป็นชื่อที่เรียบง่าย ใช้ตัวพิมพ์เล็กทั้งหมด และใช้เครื่องหมายขีดเชื่อมคำแทนช่องว่าง
+2. ext Domain: ในไฟล์ปลั๊กอินหลัก คุณควรระบุ text domain ให้ตรงกับชื่อโฟลเดอร์ เช่น super-duper-forums ซึ่งจะใช้ในการโหลดไฟล์แปล
 
-// plugin_dir_path(__FILE__) จะคืนค่าเส้นทางไดเรกทอรีบนเซิร์ฟเวอร์ไฟล์ที่เรียกใช้ฟังก์ชันนี้
-// ตัวอย่างเช่น ถ้าไฟล์ปลั๊กอินของคุณอยู่ที่ /wp-content/plugins/my-plugin/my-plugin.php
-// plugin_dir_path(__FILE__) จะคืนค่า /wp-content/plugins/my-plugin/
+Plugin Name: Super Duper Forums
+Plugin URI: http://example.com/super-duper-forums
+Description: ปลั๊กอินสำหรับสร้างฟอรั่ม
+Version: 1.0
+Author: ชื่อผู้เขียน
+Text Domain: super-duper-forums
 
-// plugin_dir_url(__FILE__) จะคืนค่า URL ของไดเรกทอรีที่มีไฟล์ปลั๊กอินนี้
-// ตัวอย่างเช่น ถ้าไฟล์ปลั๊กอินของคุณอยู่ที่ /wp-content/plugins/my-plugin/my-plugin.php
-// plugin_dir_url(__FILE__) จะคืนค่า URL ที่คล้ายกับ http://example.com/wp-content/plugins/my-plugin/
+// โค้ดของปลั๊กอินที่นี่
 
-// การกำหนดค่าเหล่านี้เป็นค่าคงที่ช่วยให้สามารถอ้างอิงเส้นทางไดเรกทอรีและ URL ของปลั๊กอินได้อย่างง่ายดาย
-// ในทุกส่วนของโค้ดปลั๊กอิน โดยไม่ต้องคำนวณเส้นทางหรือ URL ใหม่ทุกครั้ง
+// โครงสร้างโฟลเดอร์สำหรับปลั๊กอิน "Super Duper Forums"
+super-duper-forums/
+    css/
+        style.css
+    js/
+        script.js
+    includes/
+        helper-functions.php
+    super-duper-forums.php
 
 */
