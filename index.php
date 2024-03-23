@@ -1,27 +1,18 @@
 <?php
 /* 
-ถ้าชื่อปลั๊กอินของคุณคือ "Super Duper Forums" และคุณต้องการสร้างปลั๊กอินนี้:
+ ตัวอย่างการใช้ namespace กับฟังก์ชันในปลั๊กอิน
 
-1. ชื่อโฟลเดอร์ปลั๊กอิน: ควรเป็น super-duper-forums ซึ่งเป็นชื่อที่เรียบง่าย ใช้ตัวพิมพ์เล็กทั้งหมด และใช้เครื่องหมายขีดเชื่อมคำแทนช่องว่าง
-2. ext Domain: ในไฟล์ปลั๊กอินหลัก คุณควรระบุ text domain ให้ตรงกับชื่อโฟลเดอร์ เช่น super-duper-forums ซึ่งจะใช้ในการโหลดไฟล์แปล
+ Namespace ทุกอย่าง หากคุณมีฟังก์ชันที่ชื่อว่า get_post(), มันจะขัดแย้งกับฟังก์ชัน get_post() ของ WordPress เองและทำให้เกิดข้อผิดพลาดร้ายแรง นั่นไม่ใช่ประสบการณ์ที่ดีสำหรับผู้ใช้ การเขียนโค้ดที่ดีหมายถึงการทำให้แน่ใจว่าโค้ดของคุณไม่ขัดแย้งกับโค้ดของนักพัฒนาคนอื่น วิธีที่ดีที่สุดในการรับประกันสิ่งนี้คือการใช้คำนำหน้าหรือ namespace กับคลาส ฟังก์ชัน และสิ่งอื่นๆ ทั้งหมดภายใน global namespace
 
-Plugin Name: Super Duper Forums
-Plugin URI: http://example.com/super-duper-forums
-Description: ปลั๊กอินสำหรับสร้างฟอรั่ม
-Version: 1.0
-Author: ชื่อผู้เขียน
-Text Domain: super-duper-forums
+ function myplugin_get_post() {
+    // โค้ดของคุณที่นี่
+ }
 
-// โค้ดของปลั๊กอินที่นี่
+// หรือการใช้ namespace กับคลาส
+class MyPlugin_CustomClass {
+    // โค้ดของคลาสที่นี่
+}
 
-// โครงสร้างโฟลเดอร์สำหรับปลั๊กอิน "Super Duper Forums"
-super-duper-forums/
-    css/
-        style.css
-    js/
-        script.js
-    includes/
-        helper-functions.php
-    super-duper-forums.php
+การใช้คำนำหน้าหรือ namespace ช่วยป้องกันการขัดแย้งระหว่างโค้ดของคุณกับโค้ดจาก WordPress หรือปลั๊กอินอื่นๆ ทำให้ปลั๊กอินของคุณมีความเสถียรและปลอดภัยมากขึ้น
 
 */
