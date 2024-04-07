@@ -1,53 +1,38 @@
 <?php
 /* 
-Namespace ใน PHP เป็นวิธีการจัดกลุ่มคลาสและฟังก์ชันที่เกี่ยวข้องกันไว้ด้วยกัน เพื่อหลีกเลี่ยงความขัดแย้งของชื่อและทำให้โค้ดมีความเป็นระเบียบมากขึ้น โดยมีหลักการใช้ดังนี้:
+เมื่อสร้างปลั๊กอิน มักจะต้องรันโค้ดบางอย่างเมื่อผู้ใช้เปิดใช้งานปลั๊กอินเป็นครั้งแรก เช่น การเพิ่มความสามารถพิเศษให้กับบทบาทผู้ดูแลระบบสำหรับ Custom Post Type หรือตั้งค่าตัวเลือกสำหรับปลั๊กอิน WordPress มีฟังก์ชัน register_activation_hook() ที่ช่วยให้เราส่งค่า Callback สำหรับจัดการโค้ดที่ต้องการรันเมื่อเปิดใช้งานปลั๊กอิน ควรแยกโค้ดส่วนนี้ออกจากโค้ดหลักของปลั๊กอินเพื่อความเป็นระเบียบ
+*/
+namespace PDEV;
 
-กำหนดชื่อ Namespace ที่สื่อความหมายและไม่ซ้ำกับชื่ออื่นๆ เช่น PDEV ย่อมาจาก "Plugin Development"
-ใช้คีย์เวิร์ด namespace ตามด้วยชื่อ Namespace ที่ต้องการที่ด้านบนสุดของไฟล์ PHP
-ภายใน Namespace สามารถประกาศคลาสและฟังก์ชันต่างๆ ได้
-สามารถใช้ Namespace ย่อยได้โดยใช้ \ เป็นตัวคั่น เช่น PDEV\SubNamespace
-เมื่อต้องการอ้างอิงคลาสหรือฟังก์ชันจาก Namespace อื่น ให้ใช้ use หรือเรียกแบบเต็มด้วย \ นำหน้า
-ตัวอย่างโครงสร้างโฟลเดอร์และไฟล์ที่ใช้ Namespace:
+// ลงทะเบียน Activation Hook โดยเรียกใช้คลาส Activation และเมธอด activate()
+register_activation_hook( __FILE__, function() {
+    require_once plugin_dir_path( __FILE__ ) . 'src/Activation.php';
+    Activation::activate();
+} );
 
-plugin-name/
-├── src/
-│   ├── Admin/
-│   │   ├── AdminPage.php
-│   │   └── Settings.php
-│   ├── Frontend/
-│   │   ├── Shortcodes.php
-│   │   └── Widget.php
-│   ├── Activation.php
-│   └── Deactivation.php
-├── vendor/
-│   └── autoload.php
-└── plugin-name.php
-
-ตัวอย่างการใช้ Namespace ในไฟล์ AdminPage.php:
-<?php
-namespace PDEV\Admin;
-
-class AdminPage {
-    // ...
+class Activation {
+    public static function activate() {
+        // ดึงข้อมูล Role ของ Administrator
+        $role = get_role( 'administrator' );
+        
+        // ตรวจสอบว่า Role มีอยู่หรือไม่
+        if ( ! empty( $role ) ) {
+            // เพิ่มความสามารถพิเศษ 'pdev_manage' ให้กับ Administrator
+            $role->add_cap( 'pdev_manage' );
+        }
+    }
 }
 
-ตัวอย่างการใช้ Namespace ในไฟล์ plugin-name.php:
-<?php
-use PDEV\Activation;
-use PDEV\Deactivation;
-use PDEV\Admin\AdminPage;
-use PDEV\Frontend\Shortcodes;
+/* 
 
-// Plugin activation
-register_activation_hook( __FILE__, [ Activation::class, 'activate' ] );
+คำอธิบาย:
 
-// Plugin deactivation
-register_deactivation_hook( __FILE__, [ Deactivation::class, 'deactivate' ] );
-
-// Admin page
-$adminPage = new AdminPage();
-
-// Shortcodes
-$shortcodes = new Shortcodes();
-ในตัวอย่างนี้ เราใช้ Namespace หลักเป็น PDEV และแบ่งเป็น Namespace ย่อยตามหน้าที่ เช่น PDEV\Admin และ PDEV\Frontend ทำให้โค้ดมีความเป็นระเบียบและง่ายต่อการจัดการมากขึ้น และเมื่อต้องการใช้คลาสหรือฟังก์ชันจาก Namespace อื่น เราสามารถใช้ use เพื่อ Import เข้ามาได้
+เราใช้ Namespace PDEV เพื่อหลีกเลี่ยงความขัดแย้งของชื่อฟังก์ชันหรือคลาสกับโค้ดอื่นๆ
+ใช้ฟังก์ชัน register_activation_hook() เพื่อลงทะเบียน Activation Hook โดยส่งพารามิเตอร์เป็นตำแหน่งไฟล์ปลั๊กอิน (__FILE__) และ Callback ที่ต้องการให้ทำงาน
+ใน Callback เราเรียกใช้ไฟล์ Activation.php ที่อยู่ในโฟลเดอร์ src และเรียกใช้เมธอด activate() จากคลาส Activation
+ในเมธอด activate():
+ใช้ฟังก์ชัน get_role() เพื่อดึงข้อมูล Role ของ Administrator
+ตรวจสอบว่า Role มีอยู่หรือไม่ด้วย !empty()
+ถ้ามี ให้ใช้เมธอด add_cap() เพื่อเพิ่มความสามารถพิเศษ 'pdev_manage' ให้กับ Administrator
+ด้วยวิธีนี้ เราสามารถเขียนโค้ดสำหรับการเปิดใช้งานปลั๊กอินได้อย่างเป็นระเบียบ และสามารถรันโค้ดที่ต้องการเพียงครั้งเดียวหรือสิ่งที่ไม่จำเป็นต้องรันในทุกๆ การโหลดหน้าเว็บ เช่น การสร้างตารางในฐานข้อมูลเฉพาะของปลั๊กอิน
 */
