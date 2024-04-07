@@ -1,40 +1,38 @@
 <?php
 /* 
-เช่นเดียวกับฟังก์ชันการเปิดใช้งาน WordPress ยังอนุญาตให้เราสามารถรันโค้ดจาก Deactivation Callback ที่ลงทะเบียนไว้ผ่านฟังก์ชัน register_deactivation_hook() ได้ โดยตัวอย่างจะเรียกใช้คลาส src/Deactivation.php และเมธอด deactivate() เมื่อลงทะเบียน Deactivation Callback แล้ว เราสามารถเขียนโค้ดที่ต้องการรันเมื่อปิดใช้งานปลั๊กอินได้อย่างอิสระ
+การตั้งค่า Deactivation Callback มักไม่จำเป็น
 
-อธิบาย code:
+1. การตั้งค่า Deactivation Callback มักไม่จำเป็น เพราะสิ่งที่ควรทำเมื่อปิดใช้งานปลั๊กอิน ควรเกิดขึ้นตอนถอนการติดตั้งปลั๊กอินมากกว่า
 
-ไฟล์ plugin.php:
-<?php
-namespace PDEV;
+2. การปิดใช้งานไม่ใช่เวลาที่เหมาะสมสำหรับการลบข้อมูลต่างๆ เช่น ตัวเลือกปลั๊กอิน, ตารางฐานข้อมูล, เนื้อหาของผู้ใช้ เพราะอาจทำให้ผู้ใช้สูญเสียข้อมูลสำคัญโดยไม่ตั้งใจ
 
-// ลงทะเบียน Deactivation Hook โดยเรียกใช้คลาส Deactivation และเมธอด deactivate()
+3. WordPress และผู้ใช้อาจปิดใช้งานปลั๊กอินด้วยเหตุผลหลายอย่าง ซึ่งไม่ได้หมายความว่าต้องการลบข้อมูลทั้งหมด
 
-register_deactivation_hook( __FILE__, function() {
-    require_once plugin_dir_path( __FILE__ ) . 'src/Deactivation.php';
-    Deactivation::deactivate();
-} );
+4. ควรหลีกเลี่ยงการทำลายข้อมูลในขั้นตอนการปิดใช้งานปลั๊กอิน และควรทำเฉพาะเมื่อผู้ใช้ถอนการติดตั้งปลั๊กอินเท่านั้น
 
-ไฟล์ src/Deactivation.php:
-<?php
-namespace PDEV;
+5. หากจำเป็นต้องใช้ Deactivation Callback ควรใช้ด้วยความระมัดระวังอย่างยิ่ง เพื่อป้องกันการสูญเสียข้อมูลของผู้ใช้
 
-class Deactivation {
-    public static function deactivate() {
-        // เขียนโค้ดที่ต้องการรันเมื่อปิดใช้งานปลั๊กอินที่นี่
-    }
-}
 
-คำอธิบาย:
-- ในไฟล์ `plugin.php`:
-  - เราใช้ Namespace `PDEV` เพื่อหลีกเลี่ยงความขัดแย้งของชื่อฟังก์ชันหรือคลาส
-  - ใช้ฟังก์ชัน `register_deactivation_hook()` เพื่อลงทะเบียน Deactivation Hook โดยส่งพารามิเตอร์เป็นตำแหน่งไฟล์ปลั๊กอิน (`__FILE__`) และ Callback ที่ต้องการให้ทำงาน
-  - ใน Callback เราเรียกใช้ไฟล์ `Deactivation.php` ที่อยู่ในโฟลเดอร์ `src` และเรียกใช้เมธอด `deactivate()` จากคลาส `Deactivation`
-
-- ในไฟล์ `src/Deactivation.php`:
-  - เราประกาศคลาส `Deactivation` ภายใต้ Namespace `PDEV`
-  - สร้างเมธอด `deactivate()` แบบ Static เพื่อเขียนโค้ดที่ต้องการรันเมื่อปิดใช้งานปลั๊กอิน
-  - ภายในเมธอด `deactivate()` เราสามารถเขียนโค้ดอะไรก็ได้ที่ต้องการให้ทำงานเมื่อปิดใช้งานปลั๊กอิน เช่น ลบข้อมูลชั่วคราว, ล้างค่าออปชันต่างๆ เป็นต้น
-
-ด้วยวิธีนี้ เราสามารถแยกโค้ดสำหรับการปิดใช้งานปลั๊กอินออกจากส่วนอื่นๆ ได้อย่างเป็นระเบียบ และสามารถเขียนโค้ดที่ต้องการรันเมื่อผู้ใช้ปิดใช้งานปลั๊กอินได้อย่างอิสระ
 */
+/*
+Plugin Name: ตัวอย่างปลั๊กอิน
+Plugin URI: http://example.com/
+Description: ปลั๊กอินตัวอย่างสำหรับการปิดใช้งาน
+Version: 1.0
+Author: ชื่อผู้พัฒนา
+Author URI: http://example.com/
+*/
+
+// ฟังก์ชันที่ทำงานเมื่อปิดใช้งานปลั๊กอิน
+function deactivate_example_plugin() {
+    // ลบตัวเลือกของปลั๊กอิน (ไม่แนะนำ)
+    // delete_option('example_plugin_settings');
+
+    // ลบตารางฐานข้อมูลของปลั๊กอิน (ไม่แนะนำ)
+    // global $wpdb;
+    // $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}example_table");
+
+    // ลบเนื้อหาของผู้ใช้ (ไม่แนะนำอย่างยิ่ง)
+    // wp_delete_post($post_id, true);
+}
+register_deactivation_hook(__FILE__, 'deactivate_example_plugin');
