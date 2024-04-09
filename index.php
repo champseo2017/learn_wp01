@@ -1,63 +1,58 @@
 <?php
 /* 
-การทำความสะอาดสิ่งที่ปลั๊กอินทิ้งไว้เมื่อผู้ใช้งานถอนการติดตั้งปลั๊กอินเป็นส่วนสำคัญของการพัฒนาปลั๊กอินอย่างมืออาชีพ การเขียนขั้นตอนการถอนการติดตั้งใช้งานง่าย แต่ช่วยให้ผู้ใช้มั่นใจว่าสามารถใช้ปลั๊กอินโดยไม่ต้องกังวลว่าจะมีข้อมูลที่ไม่ต้องการหลงเหลืออยู่
+การพัฒนาปลั๊กอินอย่างมืออาชีพ จำเป็นต้องมีมาตรฐานในการเขียนโค้ด เพื่อให้ง่ายต่อการดูแลรักษาในระยะยาว และทำให้นักพัฒนาคนอื่นๆ สามารถเรียนรู้หรือมีส่วนร่วมในการพัฒนาปลั๊กอินได้อย่างรวดเร็ว WordPress มีมาตรฐานการเขียนโค้ดสำหรับโค้ดหลัก ซึ่งเป็นจุดเริ่มต้นที่ดีในการสร้างปลั๊กอิน สามารถดูมาตรฐานการเขียนโค้ดของ WordPress ได้ที่ https://make.wordpress.org/core/handbook/best-practices/coding-standards
 
-การถอนการติดตั้งมีความจำเป็นเพราะเมื่อผู้ใช้ติดตั้งแอปบนมือถือและตัดสินใจที่จะไม่ใช้งานแล้ว ก็จะลบหรือ "ถอนการติดตั้ง" โดยไม่ต้องการให้แอปทิ้งการตั้งค่าหรือข้อมูลอื่นๆ ที่ไม่จำเป็นไว้ ปลั๊กอินใน WordPress ก็เช่นเดียวกัน ผู้ใช้ควรมั่นใจได้ว่าเว็บไซต์ของพวกเขาไม่มีข้อมูลที่ไม่จำเป็นหลงเหลืออยู่จากปลั๊กอินที่เคยใช้หรือทดสอบ
+อย่างไรก็ตาม WordPress มีโค้ดเก่าที่สืบทอดมานานกว่า 15 ปี และบางครั้งมาตรฐานของ WordPress อาจไม่สอดคล้องกับมาตรฐานของชุมชน PHP ที่ใหญ่กว่า ซึ่งอาจทำให้นักพัฒนา PHP ที่เพิ่งเข้ามาในชุมชน WordPress รู้สึกไม่พอใจ นอกจากนี้ยังสามารถปฏิบัติตามมาตรฐานที่แนะนำของ PHP (PSRs) ที่สร้างและดูแลโดย PHP Framework Interrop Group (PHP-FIG) สำหรับชุมชน PHP ที่ใหญ่กว่า สามารถดูมาตรฐานเหล่านี้ได้ที่ https://www.php-fig.org/psr
 
-สิ่งสำคัญที่สุดในการพัฒนาปลั๊กอินคือการจัดการและลบสิ่งที่ไม่จำเป็นออกไป เมื่อปลั๊กอินถูกถอนการติดตั้ง ให้ตรวจสอบว่าได้ลบออปชันหรือข้อมูลอื่นๆ ที่ปลั๊กอินเพิ่มเข้ามาแล้ว อย่างไรก็ตาม บางครั้งเราอาจต้องเก็บเนื้อหาที่ผู้ใช้สร้างขึ้น เช่น Custom Post Type หรือตารางฐานข้อมูลที่กำหนดเอง ในกรณีเหล่านี้ ควรมีการตั้งค่าให้ผู้ใช้เลือกได้ว่าต้องการลบข้อมูลเหล่านั้นเมื่อถอนการติดตั้งหรือไม่
-
-หลักการทั่วไปคือต้องเคารพเนื้อหาของผู้ใช้ ถ้าไม่แน่ใจ ให้ขออนุญาตผู้ใช้ก่อนลบข้อมูลที่พวกเขาอาจต้องการเก็บไว้
-
-WordPress มีวิธีการถอนการติดตั้งปลั๊กอินสองวิธี ได้แก่ การใช้ไฟล์ uninstall.php และ Uninstall Hook
-
-อธิบาย code:
+สิ่งที่สำคัญที่สุดคือการรักษาความสม่ำเสมอในโค้ดเบสของคุณ โดยไม่คำนึงถึงมาตรฐานการเขียนโค้ดที่คุณปฏิบัติตาม
 
 */
-1. ไฟล์ `uninstall.php`:
-```php
-<?php
-// ตรวจสอบว่าถูกเรียกจากหน้าถอนการติดตั้งปลั๊กอินของ WordPress จริงๆ
-if (!defined('WP_UNINSTALL_PLUGIN')) {
+/**
+ * Plugin Name: My Plugin
+ * Plugin URI: https://example.com/my-plugin
+ * Description: A sample plugin demonstrating coding standards.
+ * Version: 1.0.0
+ * Author: John Doe
+ * Author URI: https://example.com
+ * License: GPL-2.0+
+ * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
+ */
+
+// If this file is accessed directly, abort.
+if ( ! defined( 'WPINC' ) ) {
     die;
 }
 
-// ลบออปชันของปลั๊กอิน
-delete_option('plugin_option_name');
+/**
+ * Custom function to demonstrate coding standards.
+ *
+ * @param string $param1 The first parameter.
+ * @param int    $param2 The second parameter.
+ * @return string The result of the function.
+ */
+function my_plugin_custom_function( $param1, $param2 ) {
+    // Check if the first parameter is a string.
+    if ( ! is_string( $param1 ) ) {
+        return '';
+    }
 
-// ลบ Custom Post Type และ Taxonomy
-unregister_post_type('custom_post_type');
-unregister_taxonomy('custom_taxonomy');
+    // Check if the second parameter is an integer.
+    if ( ! is_int( $param2 ) ) {
+        return '';
+    }
 
-// ลบตารางฐานข้อมูลที่กำหนดเอง
-global $wpdb;
-$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}custom_table");
-```
-
-คำอธิบาย:
-- สร้างไฟล์ `uninstall.php` ในไดเรกทอรีหลักของปลั๊กอิน
-- ตรวจสอบว่าไฟล์ถูกเรียกจากหน้าถอนการติดตั้งปลั๊กอินของ WordPress จริงๆ ด้วยคำสั่ง `if (!defined('WP_UNINSTALL_PLUGIN')) { die; }`
-- เขียนโค้ดสำหรับลบออปชัน, Custom Post Type, Taxonomy และตารางฐานข้อมูลที่กำหนดเองของปลั๊กอินตามต้องการ
-
-2. Uninstall Hook:
-```php
-function plugin_uninstall() {
-    // ลบออปชันของปลั๊กอิน
-    delete_option('plugin_option_name');
-
-    // ลบ Custom Post Type และ Taxonomy
-    unregister_post_type('custom_post_type');
-    unregister_taxonomy('custom_taxonomy');
-
-    // ลบตารางฐานข้อมูลที่กำหนดเอง
-    global $wpdb;
-    $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}custom_table");
+    // Perform some operation and return the result.
+    return $param1 . ' ' . $param2;
 }
-register_uninstall_hook(__FILE__, 'plugin_uninstall');
-```
 
-คำอธิบาย:
-- สร้างฟังก์ชันสำหรับจัดการการถอนการติดตั้งปลั๊กอิน เช่น `plugin_uninstall()`
-- เขียนโค้ดสำหรับลบออปชัน, Custom Post Type, Taxonomy และตารางฐานข้อมูลที่กำหนดเองของปลั๊กอินภายในฟังก์ชัน
-- ใช้ฟังก์ชัน `register_uninstall_hook()` เพื่อลงทะเบียน Uninstall Hook โดยระบุตำแหน่งไฟล์ปลั๊กอินและชื่อฟังก์ชันที่ต้องการเรียกใช้
+/* 
+ในตัวอย่างโค้ดด้านบน มีการใช้มาตรฐานการเขียนโค้ดของ WordPress ดังนี้:
 
-ทั้งสองวิธีนี้ช่วยให้เราสามารถจัดการและลบข้อมูลที่ไม่จำเป็นออกไปเมื่อผู้ใช้ถอนการติดตั้งปลั๊กอิน ทำให้เว็บไซต์สะอาดและไม่มีข้อมูลที่ไม่ต้องการหลงเหลืออยู่
+1. มีการใช้ PHP DocBlock เพื่ออธิบายข้อมูลปลั๊กอินและฟังก์ชันอย่างละเอียด
+2. มีการตรวจสอบว่าไฟล์ถูกเรียกใช้โดยตรงหรือไม่ ด้วย `if ( ! defined( 'WPINC' ) )`
+3. มีการตรวจสอบประเภทของพารามิเตอร์ที่ส่งเข้ามาในฟังก์ชัน ด้วย `is_string()` และ `is_int()`
+4. มีการใช้การเว้นวรรคและเว้นบรรทัดอย่างเหมาะสมเพื่อให้โค้ดอ่านง่าย
+5. มีการใช้ชื่อฟังก์ชันและตัวแปรที่สื่อความหมาย และเป็นไปตามรูปแบบ Snake Case
+
+การปฏิบัติตามมาตรฐานการเขียนโค้ดเหล่านี้จะช่วยให้โค้ดของปลั๊กอินมีความสะอาด เป็นระเบียบ และง่ายต่อการดูแลรักษาในระยะยาว
+*/
