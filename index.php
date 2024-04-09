@@ -1,58 +1,25 @@
 <?php
 /* 
-การพัฒนาปลั๊กอินอย่างมืออาชีพ จำเป็นต้องมีมาตรฐานในการเขียนโค้ด เพื่อให้ง่ายต่อการดูแลรักษาในระยะยาว และทำให้นักพัฒนาคนอื่นๆ สามารถเรียนรู้หรือมีส่วนร่วมในการพัฒนาปลั๊กอินได้อย่างรวดเร็ว WordPress มีมาตรฐานการเขียนโค้ดสำหรับโค้ดหลัก ซึ่งเป็นจุดเริ่มต้นที่ดีในการสร้างปลั๊กอิน สามารถดูมาตรฐานการเขียนโค้ดของ WordPress ได้ที่ https://make.wordpress.org/core/handbook/best-practices/coding-standards
-
-อย่างไรก็ตาม WordPress มีโค้ดเก่าที่สืบทอดมานานกว่า 15 ปี และบางครั้งมาตรฐานของ WordPress อาจไม่สอดคล้องกับมาตรฐานของชุมชน PHP ที่ใหญ่กว่า ซึ่งอาจทำให้นักพัฒนา PHP ที่เพิ่งเข้ามาในชุมชน WordPress รู้สึกไม่พอใจ นอกจากนี้ยังสามารถปฏิบัติตามมาตรฐานที่แนะนำของ PHP (PSRs) ที่สร้างและดูแลโดย PHP Framework Interrop Group (PHP-FIG) สำหรับชุมชน PHP ที่ใหญ่กว่า สามารถดูมาตรฐานเหล่านี้ได้ที่ https://www.php-fig.org/psr
-
-สิ่งที่สำคัญที่สุดคือการรักษาความสม่ำเสมอในโค้ดเบสของคุณ โดยไม่คำนึงถึงมาตรฐานการเขียนโค้ดที่คุณปฏิบัติตาม
-
+การเขียนเอกสารประกอบโค้ดที่ดีช่วยให้สามารถค้นหาข้อผิดพลาดได้ง่ายขึ้น หากโค้ดของฟังก์ชันทำสิ่งที่แตกต่างไปจากสิ่งที่ระบุไว้ในเอกสาร คุณหรือนักพัฒนาคนอื่นๆ จะทราบได้ทันทีว่าเอกสารหรือโค้ดมีข้อผิดพลาด
 */
 /**
- * Plugin Name: My Plugin
- * Plugin URI: https://example.com/my-plugin
- * Description: A sample plugin demonstrating coding standards.
- * Version: 1.0.0
- * Author: John Doe
- * Author URI: https://example.com
- * License: GPL-2.0+
- * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
- */
-
-// If this file is accessed directly, abort.
-if ( ! defined( 'WPINC' ) ) {
-    die;
-}
-
-/**
- * Custom function to demonstrate coding standards.
+ * Calculates the product of two numbers.
  *
- * @param string $param1 The first parameter.
- * @param int    $param2 The second parameter.
- * @return string The result of the function.
+ * This function takes two numbers as input and returns their product.
+ *
+ * @param int $num1 The first number.
+ * @param int $num2 The second number.
+ *
+ * @return int The product of the two numbers.
  */
-function my_plugin_custom_function( $param1, $param2 ) {
-    // Check if the first parameter is a string.
-    if ( ! is_string( $param1 ) ) {
-        return '';
-    }
-
-    // Check if the second parameter is an integer.
-    if ( ! is_int( $param2 ) ) {
-        return '';
-    }
-
-    // Perform some operation and return the result.
-    return $param1 . ' ' . $param2;
+function calculate_product( $num1, $num2 ) {
+    // Bug: The function returns the sum instead of the product.
+    return $num1 + $num2;
 }
-
 /* 
-ในตัวอย่างโค้ดด้านบน มีการใช้มาตรฐานการเขียนโค้ดของ WordPress ดังนี้:
+ในตัวอย่างโค้ดด้านบน มีการใช้ PHPDoc เพื่อเขียนเอกสารประกอบฟังก์ชัน calculate_product() โดยระบุว่าฟังก์ชันนี้ใช้สำหรับคำนวณผลคูณของตัวเลขสองจำนวน อย่างไรก็ตาม เมื่อดูที่โค้ดของฟังก์ชัน จะพบว่ามีข้อผิดพลาด (Bug) เนื่องจากฟังก์ชันคืนค่าผลรวมของตัวเลขสองจำนวน ($num1 + $num2) แทนที่จะเป็นผลคูณ
 
-1. มีการใช้ PHP DocBlock เพื่ออธิบายข้อมูลปลั๊กอินและฟังก์ชันอย่างละเอียด
-2. มีการตรวจสอบว่าไฟล์ถูกเรียกใช้โดยตรงหรือไม่ ด้วย `if ( ! defined( 'WPINC' ) )`
-3. มีการตรวจสอบประเภทของพารามิเตอร์ที่ส่งเข้ามาในฟังก์ชัน ด้วย `is_string()` และ `is_int()`
-4. มีการใช้การเว้นวรรคและเว้นบรรทัดอย่างเหมาะสมเพื่อให้โค้ดอ่านง่าย
-5. มีการใช้ชื่อฟังก์ชันและตัวแปรที่สื่อความหมาย และเป็นไปตามรูปแบบ Snake Case
+ในกรณีนี้ การเขียนเอกสารประกอบโค้ดที่ดีจะช่วยให้สามารถตรวจพบข้อผิดพลาดได้ทันที เพราะเอกสารระบุว่าฟังก์ชันควรคืนค่าผลคูณ แต่โค้ดกลับคืนค่าผลรวม ดังนั้น เราจึงทราบได้ทันทีว่าโค้ดมีข้อผิดพลาดและต้องได้รับการแก้ไข
 
-การปฏิบัติตามมาตรฐานการเขียนโค้ดเหล่านี้จะช่วยให้โค้ดของปลั๊กอินมีความสะอาด เป็นระเบียบ และง่ายต่อการดูแลรักษาในระยะยาว
+การเขียนเอกสารประกอบโค้ดที่ชัดเจนและถูกต้องจะช่วยให้นักพัฒนาสามารถค้นหาและแก้ไขข้อผิดพลาดได้อย่างรวดเร็ว ซึ่งช่วยประหยัดเวลาและทรัพยากรในการพัฒนาซอฟต์แวร์ นอกจากนี้ ยังช่วยให้โค้ดมีความน่าเชื่อถือและง่ายต่อการบำรุงรักษาในระยะยาวอีกด้วย
 */
